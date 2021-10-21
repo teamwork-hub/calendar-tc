@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/calendar.css" />
+</head>
+<body>
+    <div>
+        <input type="text" id="input__date" class="calendar__input calendar__active" target="#calendar__date" placeholder="DD / MM / AAAA" readonly />
+        <tc-calendar class="calendar__active" id="calendar__date">
+            <tc-calendar-header class="calendar__active container__datepicker__dateselection">
+            </tc-calendar-header>
+            <tc-calendar-body class="calendar__active">
+                <tc-calendar-section class="calendar__active section__datepicker__sectioncalendar">
+                </tc-calendar-section>
+                <tc-calendar-section class="calendar__active section__datepicker__month">
+                </tc-calendar-section>
+                <tc-calendar-section class="calendar__active section__datepicker__dayshead">
+                </tc-calendar-section>
+                <tc-calendar-section class="calendar__active section__datepicker__daysbody">
+                </tc-calendar-section>
+            </tc-calendar-body>
+        </tc-calendar>
+    </div>
+
+    <script type="module" src="src/module__calendar.js"></script>
+</body>
+</html>
