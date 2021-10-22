@@ -228,6 +228,16 @@ tc-calendar {
                 color: rgb(32, 111, 242);
                 cursor: pointer;
             }
+
+            .tc-calendar-day {
+                &:hover {
+                    border-radius: 50%;
+                    background-color: rgb(32, 111, 242);
+                    color: #fff;
+                    cursor: pointer;
+                    transition: all .3s ease-in;
+                }
+            }
         } 
 
         .tc-calendar-row-body-month {
@@ -244,25 +254,15 @@ tc-calendar {
                 color: rgb(100, 100, 100);
             }
 
-            .tc-calendar-month:hover {
-                border-radius: 3px;
-                background-color: rgb(32, 111, 242);
-                color: #fff;
-                cursor: pointer;
-                transition: all .3s ease-in;
-            }
-
-            .tc-calendar-day{
+            .tc-calendar-month{
                 &:hover {
-                    border-radius: 50%;
+                    border-radius: 3px;
                     background-color: rgb(32, 111, 242);
                     color: #fff;
                     cursor: pointer;
                     transition: all .3s ease-in;
                 }
             }
-
-
         } 
 
     }
