@@ -3,82 +3,177 @@ const monthsLegends = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "J
 const weekDays = ["LUN", "MAR", "MIE", "JUE", "VIE", "SAB", "DOM"];
 const weekDaysLegends = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
+const handledComponentCalendar = () => {
+
+    const calendars = document.querySelectorAll('tc-component-calendar');
+
+    calendars.forEach((element) => {
+
+        let component = {};
+        const attrs = [...element.attributes];
+
+        for(let i = 0; i < attrs.length; i++){
+            component[attrs[i].name] = attrs[i].value;
+        }
+
+        const { parent, target, box, placeholder, close, required } = component;
+
+        element.innerHTML = 
+        `
+            <tc-component-flex>
+                <tc-calendar-event class="without-calendar" id="${box}">
+                    <input type="text" id="${parent}" class="tc-input-calendar calendar__input calendar__active" parent="#${parent}" target="#${target}" box="#${box}" close="${close}" 
+                        readonly ${required ? required : ``} ${required ? `novalid` : `valid` } />
+                    <label class="tc-label-calendar calendar__active" for="${parent}">${placeholder}</label>
+                    <tc-calendar-avatar class="calendar__active">
+                        <img src="img/calendar-tc.svg" class="calendar__active" />
+                    </tc-calendar-avatar>
+                    <tc-calendar-close class="calendar__active calendar__empty__input" parent="#${parent}" target="#${target}" box="#${box}">
+                        <img src="img/close-tc.svg" class="calendar__active" parent="#${parent}" target="#${target}" box="#${box}" />
+                    </tc-calendar-close>
+                </tc-calendar-event>
+            </tc-component-flex>
+            <tc-validation-calendar>
+            </tc-validation-calendar>
+            <tc-calendar class="calendar__active" id="${target}" parent="#${parent}" box="#${box}">
+            </tc-calendar>
+        `;
+
+    });
+
+    handledEventListenerCalendar();
+
+};
+
 const handledEventListenerCalendar = () => {
     const elementParent = document.querySelectorAll('.calendar__input');
 
     elementParent.forEach((event) => {
-        event.addEventListener("click", (e) => {
-            const attrs = [e.target.attributes];
+        const events = ["focus"];
 
-            const element = document.querySelector(attrs[0].target.value);
-            const datepicker = e.target.value;
-            const dates = datepicker !== "" ? [datepicker.split(' / ')] : null;
-            const date = dates ? `${dates[0][0]}-${dates[0][1]}-${dates[0][2]}` : null;
-
-            const elements = document.querySelectorAll('tc-calendar');
-
-            elements.forEach((element) => {
-                element.animate([
-                    { opacity: 0 },
-                    { opacity: 1 }
-                ], { duration: 200 }); 
-
-                element.style.display = "none";
-            });
-
-            handledCalendar({
-                containerDateSelection: '.container__datepicker__dateselection',
-                containerSelectionCalendar: '.section__datepicker__sectioncalendar',
-                containerMonth: '.section__datepicker__month',
-                containerDaysHead: '.section__datepicker__dayshead',
-                containerDaysBody: '.section__datepicker__daysbody',
-                date: date,
-                target: attrs[0].target.value,
-                parent: attrs[0].parent.value,
-                closeSelectionDay: true
-            });
-
-            element.animate([
-                { opacity: 0 },
-                { opacity: 1 }
-            ], { duration: 200 }); 
-
-            element.style.display = "block";
-        });
-    });
-
-    const listenerHidden = document.querySelectorAll('html');
-
-    listenerHidden.forEach((event) => {
-        event.addEventListener("click", (e) => {    
-            const classList = e.target.classList;
-            let hidden = true;
-            
-            classList.forEach((element) => {
-                if(element === "calendar__active"){
-                    hidden = false;
-                }
-            });
-
-            if(hidden){
-
+        events.forEach((ev) => {
+            event.addEventListener(ev, (e) => {
+                const attrs = [e.target.attributes];
+                
+                const element = document.querySelector(attrs[0].target.value);
+                const datepicker = e.target.value;
+                const dates = datepicker !== ""     ? [datepicker.split(' / ')] : null;
+                const date = dates ? `${dates[0][0]}-${dates[0][1]}-${dates[0][2]}` : null;
+                
                 const elements = document.querySelectorAll('tc-calendar');
+                const box = document.querySelector(attrs[0].box.value);
+                
+                let withoutCalendar = false;
+
+                const classListBox = [...box.classList];
+
+                classListBox.forEach((clas) => {
+                    if(clas === "without-calendar"){
+                        withoutCalendar = true;
+                    }
+                });
+
+                if(withoutCalendar){
+                    box.classList.remove('without-calendar');
+                    box.classList.add('with-calendar');
+                }
 
                 elements.forEach((element) => {
                     element.animate([
                         { opacity: 0 },
                         { opacity: 1 }
                     ], { duration: 200 }); 
-
+    
                     element.style.display = "none";
                 });
-            }
+    
+                handledCalendar({
+                    containerDateSelection: '.container__datepicker__dateselection',
+                    containerSelectionCalendar: '.section__datepicker__sectioncalendar',
+                    containerMonth: '.section__datepicker__month',
+                    containerDaysHead: '.section__datepicker__dayshead',
+                    containerDaysBody: '.section__datepicker__daysbody',
+                    date: date,
+                    target: attrs[0].target.value,
+                    parent: attrs[0].parent.value,
+                    closeSelectionDay: attrs[0].close.value
+                });
+    
+                element.animate([
+                    { opacity: 0 },
+                    { opacity: 1 }
+                ], { duration: 200 }); 
+    
+                element.style.display = "block";
+            });
         });
+    });
+
+    const listenerHidden = document.querySelectorAll('html');
+
+    listenerHidden.forEach((event) => {
+        const events = ["click", "blur"];
+
+        events.forEach((ev) => {
+            event.addEventListener(ev, (e) => {    
+                const classList = e.target.classList;
+                let hidden = true;
+                
+                classList.forEach((element) => {
+                    if(element === "calendar__active"){
+                        hidden = false;
+                    }
+                });
+    
+                if(hidden){
+    
+                    const elements = document.querySelectorAll('tc-calendar');
+    
+                    elements.forEach((element) => {
+                        const attrs = [element.attributes];
+                        const box = document.querySelector(attrs[0].box.value);
+                        const parent = document.querySelector(attrs[0].parent.value);
+
+                        if(parent.value === ""){
+                            box.classList.add('without-calendar');
+                            box.classList.remove('with-calendar');
+                        }
+
+                        element.animate([
+                            { opacity: 0 },
+                            { opacity: 1 }
+                        ], { duration: 200 }); 
+    
+                        element.style.display = "none";
+                    });
+                }
+            });
+        });
+        
     });
 };
 
 const handledEventCalendar = () => {
     
+    const emptyCalendar = document.querySelectorAll('.calendar__empty__input');
+
+    emptyCalendar.forEach((event) => {
+        event.addEventListener("click", (e) => {
+            const attrs = [e.target.attributes];
+            const parent = document.querySelector(attrs[0].parent.value);
+            const calendar = document.querySelector(attrs[0].target.value);
+            const box = document.querySelector(attrs[0].box.value);
+
+            parent.value = "";
+
+            if(calendar.style.display === 'none'){
+                box.classList.remove('with-calendar');
+                box.classList.add('without-calendar');
+            }
+            
+        });
+    });
+
     const elementDay = document.querySelectorAll('.button__selector__date');
 
     elementDay.forEach((event) => {
@@ -92,7 +187,9 @@ const handledEventCalendar = () => {
             parent.value = `${Number(attrs[0].day.value) < 10 ? '0'.padEnd(2, attrs[0].day.value) : attrs[0].day.value} / ${Number(attrs[0].month.value) + 1 < 10 ? '0'.padEnd(2, Number(attrs[0].month.value) + 1) : Number(attrs[0].month.value) + 1} / ${attrs[0].year.value}`
             parent.setAttribute('readonly', 'readonly');
 
-            if(attrs[0].close.value){
+            const bool = attrs[0].close.value === 'true' ? true : false;
+
+            if(bool){
 
                 const elements = document.querySelectorAll('tc-calendar');
 
@@ -129,7 +226,7 @@ const handledEventCalendar = () => {
         event.addEventListener("click", (e) => {
             const attrs = [e.target.attributes];
             const date =  `1-${Number(attrs[0].month.value) + 1}-${attrs[0].year.value}`;
-            const dateInput = document.querySelector(attrs[0].target.value).value;
+            const dateInput = document.querySelector(attrs[0].parent.value).value;
 
             handledCalendar({
                 containerDateSelection: '.container__datepicker__dateselection',
@@ -141,7 +238,8 @@ const handledEventCalendar = () => {
                 event: 'prev',
                 dateSelected: dateInput !== "" ? dateInput : null,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
 
         });
@@ -153,7 +251,7 @@ const handledEventCalendar = () => {
         event.addEventListener("click", (e) => {
             const attrs = [e.target.attributes];
             const date =  `1-${Number(attrs[0].month.value) + 1}-${attrs[0].year.value}`;
-            const dateInput = document.querySelector(attrs[0].target.value).value;
+            const dateInput = document.querySelector(attrs[0].parent.value).value;
 
             handledCalendar({
                 containerDateSelection: '.container__datepicker__dateselection',
@@ -165,7 +263,8 @@ const handledEventCalendar = () => {
                 event: 'next',
                 dateSelected: dateInput !== "" ? dateInput : null,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
 
         });
@@ -185,7 +284,8 @@ const handledEventCalendar = () => {
                 containerMonth : '.section__datepicker__daysbody',
                 year: attrs[0].year.value,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
         });
     });
@@ -196,7 +296,7 @@ const handledEventCalendar = () => {
         event.addEventListener("click", (e) => {
             const attrs = [e.target.attributes];
             const date =  `1-${Number(attrs[0].month.value) + 1}-${attrs[0].year.value}`;
-            const dateInput = document.querySelector(attrs[0].target.value).value;
+            const dateInput = document.querySelector(attrs[0].parent.value).value;
 
             handledCalendar({
                 containerDateSelection: '.container__datepicker__dateselection',
@@ -208,7 +308,8 @@ const handledEventCalendar = () => {
                 event: 'selectMonth',
                 dateSelected: dateInput !== "" ? dateInput : null,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
         });
     });
@@ -227,7 +328,8 @@ const handledEventCalendar = () => {
                 containerMonth : '.section__datepicker__daysbody',
                 year: attrs[0].year.value,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
         });
     });
@@ -246,7 +348,8 @@ const handledEventCalendar = () => {
                 containerMonth : '.section__datepicker__daysbody',
                 year: attrs[0].year.value,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
         });
     });
@@ -265,7 +368,8 @@ const handledEventCalendar = () => {
                 containerYear: '.section__datepicker__daysbody',
                 year: attrs[0].year.value,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
         });
     });
@@ -284,7 +388,8 @@ const handledEventCalendar = () => {
                 containerMonth : '.section__datepicker__daysbody',
                 year: attrs[0].year.value,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
         });
     });
@@ -304,7 +409,8 @@ const handledEventCalendar = () => {
                 containerYear: '.section__datepicker__daysbody',
                 year: attrs[0].year.value,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
         });
     });
@@ -323,7 +429,8 @@ const handledEventCalendar = () => {
                 containerYear: '.section__datepicker__daysbody',
                 year: attrs[0].year.value,
                 target: attrs[0].target.value,
-                parent: attrs[0].parent.value
+                parent: attrs[0].parent.value,
+                closeSelectionDay: attrs[0].close.value
             });
         });
     });
@@ -338,7 +445,8 @@ const handledCalendarYears = ({
     containerYear = "",
     year = null,
     target = "",
-    parent = ""
+    parent = "",
+    closeSelectionDay = false
 }) => {
 
     let yearsContent = "";
@@ -377,14 +485,14 @@ const handledCalendarYears = ({
     document.querySelector(`${target} ${containerSelectionCalendar}`).innerHTML = 
     `   
         <tc-calendar-row class="tc-calendar-row-menu calendar__active">
-            <tc-calendar-col class="tc-calendar-col-left-arrow calendar__active button__prev__years" year="${__yearInitEndPrev}" target="${target}" parent="${parent}">
-                <img src="img/left-arrow.svg" class="left-arrow calendar__active" year="${__yearInitEndPrev}" target="${target}" parent="${parent}" />
+            <tc-calendar-col class="tc-calendar-col-left-arrow calendar__active button__prev__years" year="${__yearInitEndPrev}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
+                <img src="img/left-arrow.svg" class="left-arrow calendar__active" year="${__yearInitEndPrev}" target="${target}" parent="${parent}" close="${closeSelectionDay}" />
             </tc-calendar-col>
-            <tc-calendar-col class="tc-calendar-col-middle calendar__active" year="${__yearInitEndPrev}" target="${target}" parent="${parent}">
+            <tc-calendar-col class="tc-calendar-col-middle calendar__active" year="${__yearInitEndPrev}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
                 ${__yearLimitInit} - ${__yearLimitEnd}
             </tc-calendar-col>
-            <tc-calendar-col class="tc-calendar-col-right-arrow calendar__active button__next__years" year="${__yearInitInitNext}" target="${target}"  parent="${parent}">
-                <img src="img/right-arrow.svg" class="right-arrow calendar__active" year="${__yearInitInitNext}" target="${target}" parent="${parent}" />
+            <tc-calendar-col class="tc-calendar-col-right-arrow calendar__active button__next__years" year="${__yearInitInitNext}" target="${target}"  parent="${parent}" close="${closeSelectionDay}">
+                <img src="img/right-arrow.svg" class="right-arrow calendar__active" year="${__yearInitInitNext}" target="${target}" parent="${parent}" close="${closeSelectionDay}" />
             </tc-calendar-col>
         </tc-calendar-row>
     `;
@@ -413,7 +521,7 @@ const handledCalendarYears = ({
 
         yearsContent += 
         `
-            <tc-calendar-col class="tc-calendar-month button__selector__yeardate calendar__active" year="${element}" target="${target}" parent="${parent}">
+            <tc-calendar-col class="tc-calendar-month button__selector__yeardate calendar__active" year="${element}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
                ${ element }                 
             </tc-calendar-col>
         `;
@@ -438,7 +546,8 @@ const handledCalendarMonths = ({
     containerMonth = "",
     year = null,
     target = "",
-    parent = ""
+    parent = "",
+    closeSelectionDay = false
 }) => {
 
     let monthsContent = "";
@@ -464,14 +573,14 @@ const handledCalendarMonths = ({
     document.querySelector(`${target} ${containerSelectionCalendar}`).innerHTML = 
     `   
         <tc-calendar-row class="tc-calendar-row-menu calendar__active">
-            <tc-calendar-col class="tc-calendar-col-left-arrow calendar__active button__prev__year" year="${__prevYears}" target="${target}" parent="${parent}">
-                <img src="img/left-arrow.svg" class="left-arrow calendar__active" year="${__prevYears}" target="${target}" parent="${parent}" />
+            <tc-calendar-col class="tc-calendar-col-left-arrow calendar__active button__prev__year" year="${__prevYears}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
+                <img src="img/left-arrow.svg" class="left-arrow calendar__active" year="${__prevYears}" target="${target}" parent="${parent}" close="${closeSelectionDay}" />
             </tc-calendar-col>
-            <tc-calendar-col class="tc-calendar-col-middle calendar__active button__years" month="" year="${year}" target="${target}" parent="${parent}">
+            <tc-calendar-col class="tc-calendar-col-middle calendar__active button__years" month="" year="${year}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
                 ${year}
             </tc-calendar-col>
-            <tc-calendar-col class="tc-calendar-col-right-arrow calendar__active button__next__year" year="${__nextYears}" target="${target}" parent="${parent}">
-                <img src="img/right-arrow.svg" class="right-arrow calendar__active" year="${__nextYears}"  target="${target}" parent="${parent}" />
+            <tc-calendar-col class="tc-calendar-col-right-arrow calendar__active button__next__year" year="${__nextYears}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
+                <img src="img/right-arrow.svg" class="right-arrow calendar__active" year="${__nextYears}"  target="${target}" parent="${parent}" close="${closeSelectionDay}" />
             </tc-calendar-col>
         </tc-calendar-row>
     `;
@@ -497,7 +606,7 @@ const handledCalendarMonths = ({
 
         monthsContent += 
         `
-            <tc-calendar-col class="tc-calendar-month button__selector__monthdate calendar__active" month="${monthsIndex}" year="${year}" target="${target}" parent="${parent}">
+            <tc-calendar-col class="tc-calendar-month button__selector__monthdate calendar__active" month="${monthsIndex}" year="${year}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
                ${ element }                 
             </tc-calendar-col>
         `;
@@ -581,6 +690,22 @@ const handledCalendar = ({
         }
     }
 
+    document.querySelector(`${target}`).innerHTML = 
+    `
+        <tc-calendar-header class="calendar__active container__datepicker__dateselection">
+        </tc-calendar-header>
+        <tc-calendar-body class="calendar__active">
+            <tc-calendar-section class="calendar__active section__datepicker__sectioncalendar">
+            </tc-calendar-section>
+            <tc-calendar-section class="calendar__active section__datepicker__month">
+            </tc-calendar-section>
+            <tc-calendar-section class="calendar__active section__datepicker__dayshead">
+            </tc-calendar-section>
+            <tc-calendar-section class="calendar__active section__datepicker__daysbody">
+            </tc-calendar-section>
+        </tc-calendar-body>
+    `;
+
     document.querySelector(`${target} ${containerDateSelection}`).innerHTML =
     `
         <tc-calendar-row class="calendar__active">
@@ -614,17 +739,17 @@ const handledCalendar = ({
     document.querySelector(`${target} ${containerSelectionCalendar}`).innerHTML = 
     `   
         <tc-calendar-row class="tc-calendar-row-menu calendar__active">
-            <tc-calendar-col class="tc-calendar-col-left-arrow calendar__active button__prev__month" month="${__prevMonth.getMonth()}" year="${__prevMonth.getFullYear()}" target="${target}" parent="${parent}">
-                <img src="img/left-arrow.svg" class="left-arrow calendar__active" month="${__prevMonth.getMonth()}" year="${__prevMonth.getFullYear()}" target="${target}" parent="${parent}" />
+            <tc-calendar-col class="tc-calendar-col-left-arrow calendar__active button__prev__month" month="${__prevMonth.getMonth()}" year="${__prevMonth.getFullYear()}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
+                <img src="img/left-arrow.svg" class="left-arrow calendar__active" month="${__prevMonth.getMonth()}" year="${__prevMonth.getFullYear()}" target="${target}" parent="${parent}" close="${closeSelectionDay}" />
             </tc-calendar-col>
-            <tc-calendar-col class="tc-calendar-col-middle calendar__active button__months" year="${__yearNow}" target="${target}" parent="${parent}">
+            <tc-calendar-col class="tc-calendar-col-middle calendar__active button__months" year="${__yearNow}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
                 ${ months[__monthNow] }
             </tc-calendar-col>
-            <tc-calendar-col class="tc-calendar-col-middle calendar__active button__years" year="${__yearNow}" target="${target}" parent="${parent}">
+            <tc-calendar-col class="tc-calendar-col-middle calendar__active button__years" year="${__yearNow}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
                 ${ __yearNow }
             </tc-calendar-col>
-            <tc-calendar-col class="tc-calendar-col-right-arrow calendar__active button__next__month" month="${__nextMonth.getMonth()}" year="${__nextMonth.getFullYear()}" target="${target}" parent="${parent}">
-                <img src="img/right-arrow.svg" class="right-arrow calendar__active" month="${__nextMonth.getMonth()}" year="${__nextMonth.getFullYear()}" target="${target}" parent="${parent}" />
+            <tc-calendar-col class="tc-calendar-col-right-arrow calendar__active button__next__month" month="${__nextMonth.getMonth()}" year="${__nextMonth.getFullYear()}" target="${target}" parent="${parent}" close="${closeSelectionDay}">
+                <img src="img/right-arrow.svg" class="right-arrow calendar__active" month="${__nextMonth.getMonth()}" year="${__nextMonth.getFullYear()}" target="${target}" parent="${parent}" close="${closeSelectionDay}" />
             </tc-calendar-col>
         </tc-calendar-row>
     `;
@@ -682,4 +807,4 @@ const handledCalendar = ({
     handledEventCalendar();
 };
 
-export { handledEventListenerCalendar };
+export { handledComponentCalendar };

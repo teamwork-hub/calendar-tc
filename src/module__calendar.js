@@ -1,3 +1,3 @@
-import { handledEventListenerCalendar } from './calendar.js';
+import { handledComponentCalendar } from './calendar.js';
 
-handledEventListenerCalendar();
+handledComponentCalendar();

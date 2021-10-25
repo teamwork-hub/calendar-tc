@@ -4,9 +4,120 @@
     border: 0;
 }
 
-div {
-    width: 90%;
+tc-component-calendar {
+    display: block;
     margin: 20px auto auto auto;
+    position: relative;
+
+    tc-component-flex {
+        tc-calendar-event {
+            width: calc(100% - 30px);
+            margin-left: 30px;
+            display: flex;
+            vertical-align: middle;
+            justify-content: center;
+            align-items: center;
+
+            tc-calendar-avatar {
+                position: absolute;
+                left: 0;
+
+                img {
+                    width: 20px;
+                }
+            }
+
+            tc-calendar-close {
+                position: absolute;
+                right: 0;
+                padding-left: 10px;
+                padding-right: 10px;
+                display: flex;
+                vertical-align: middle;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                padding-top: 10px;
+                padding-bottom: 10px;
+
+                img {
+                    width: 10px;
+                }
+            }
+            
+        }
+    }
+
+    .tc-input-calendar {
+        border-bottom: 1px solid rgb(180, 180, 180);
+        width: 100%;
+        font-family: 'Quicksand', sans-serif;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        user-select: none; 
+        outline: none;
+        font-weight: 500;
+        color: rgb(100, 100, 100);
+
+        &:focus {
+            color: rgb(32, 111, 242);
+            border-bottom: 1px solid rgb(32, 111, 242);
+        }
+
+        &:focus + .tc-label-calendar {
+            transform: translate3d(0, -25px, 0);
+            transition: all .1s ease-in;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgb(32, 111, 242);
+        }
+
+        &:focus ~ tc-calendar-avatar > img {
+            content: url(../../img/calendar-tc-hover.svg);
+        }
+
+        &:focus ~ tc-calendar-close > img {
+            content: url(../../img/close-tc-hover.svg);
+        }
+    }
+
+    .with-calendar {
+        .tc-input-calendar {
+            &:focus ~ tc-calendar-close {
+                display: block;
+            }
+            
+            &:not(:focus) + .tc-label-calendar {
+                transform: translate3d(0, -25px, 0);
+                font-size: 13px;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .without-calendar {
+        .tc-input-calendar {
+            &:not(:focus) ~ tc-calendar-close {
+                display: none;
+            }
+
+            &:not(:focus) + .tc-label-calendar {
+                transform: translate3d(0, 0, 0);
+                transition: all .1s ease-in;
+            }
+        }
+    }
+
+    .tc-label-calendar {
+        position: absolute;
+        left: 0;
+        top: 12px;
+        font-family: 'Quicksand', sans-serif;
+        color: rgb(100, 100, 100);
+        cursor: text;
+        margin-left: 30px;
+    }
+
 }
 
 tc-calendar {
@@ -15,10 +126,11 @@ tc-calendar {
     min-height: 400px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, .2);
     border-radius: 3px;
-    margin-top: 20px;
+    margin-top: 10px;
     font-family: 'Quicksand', sans-serif;
     user-select: none; 
     position: absolute;
+    z-index: 999;
 
     tc-calendar-header {
         display: block;
@@ -268,4 +380,13 @@ tc-calendar {
     }
 
 
+}
+
+@keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
 }

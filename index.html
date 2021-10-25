@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,42 +9,42 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/calendar.css" />
+    <style>
+
+        /** CSS Solo de ejemplo */
+        div .title {
+            font-family: 'Quicksand', sans-serif;
+            text-align: center;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            color: rgb(32, 111, 242);
+        }
+
+        div {
+            width: 30%;
+            margin: auto;
+            min-height: 1000px;
+        }
+    </style>
 </head>
 <body>
     <div>
-        <input type="text" id="input__date" class="calendar__input calendar__active" parent="#input__date" target="#calendar__date" placeholder="DD / MM / AAAA" readonly />
-        <tc-calendar class="calendar__active" id="calendar__date">
-            <tc-calendar-header class="calendar__active container__datepicker__dateselection">
-            </tc-calendar-header>
-            <tc-calendar-body class="calendar__active">
-                <tc-calendar-section class="calendar__active section__datepicker__sectioncalendar">
-                </tc-calendar-section>
-                <tc-calendar-section class="calendar__active section__datepicker__month">
-                </tc-calendar-section>
-                <tc-calendar-section class="calendar__active section__datepicker__dayshead">
-                </tc-calendar-section>
-                <tc-calendar-section class="calendar__active section__datepicker__daysbody">
-                </tc-calendar-section>
-            </tc-calendar-body>
-        </tc-calendar>
+        <h1 class="title">Calendario</h1>
+        <tc-component-calendar parent="input__date" 
+                               target="calendar__date" 
+                               box="box__date" 
+                               placeholder="Fecha de Prueba"
+                               close="false"
+                               required="required">
+        </tc-component-calendar>
+        <tc-component-calendar parent="input__dat2" 
+                               target="calendar__date2" 
+                               box="box__date2" 
+                               placeholder="Fecha de Prueba 2"
+                               close="true">
+        </tc-component-calendar>
     </div>
-    <div>
-        <input type="text" id="input__date2" class="calendar__input calendar__active" parent="#input__date2" target="#calendar__date2" placeholder="DD / MM / AAAA" readonly />
-        <tc-calendar class="calendar__active" id="calendar__date2">
-            <tc-calendar-header class="calendar__active container__datepicker__dateselection">
-            </tc-calendar-header>
-            <tc-calendar-body class="calendar__active">
-                <tc-calendar-section class="calendar__active section__datepicker__sectioncalendar">
-                </tc-calendar-section>
-                <tc-calendar-section class="calendar__active section__datepicker__month">
-                </tc-calendar-section>
-                <tc-calendar-section class="calendar__active section__datepicker__dayshead">
-                </tc-calendar-section>
-                <tc-calendar-section class="calendar__active section__datepicker__daysbody">
-                </tc-calendar-section>
-            </tc-calendar-body>
-        </tc-calendar>
-    </div>
+    
 
     <script type="module" src="src/module__calendar.js"></script>
 </body>
